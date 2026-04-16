@@ -95,6 +95,11 @@ if __name__ == "__main__":
     plt.yscale('log') # Escala logarítmica para ver mejor la caída
     plt.legend()
     plt.grid(True, linestyle='--', alpha=0.5)
+
+    for feature, peso in zip(features, w_final[1:]):
+        impacto_absoluto = abs(peso)
+        print(f"{feature:>15}: {peso:>10.5f}  |  Impacto (Abs): {impacto_absoluto:.5f}")
+    print("="*50)
     
     print("\n[INFO] Gráfica generada. Analiza cuál LR converge más rápido.")
     plt.show()
