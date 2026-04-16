@@ -21,7 +21,10 @@ def gradient_descent_multivariable(X, y, lr=0.01, epocas=500, epsilon=1e-6):
 
     # 1. INICIALIZACIÓN ALEATORIA (Pesos pequeños)
     np.random.seed(42) # Para resultados consistentes
-    w = np.random.randn(n_features) * 3
+    w = np.random.randn(n_features)
+    
+    # Guardamos una copia exacta de los pesos iniciales antes de empezar a modificarlos
+    w_inicial = np.copy(w) 
     
     historial_costo = []
 
@@ -46,7 +49,8 @@ def gradient_descent_multivariable(X, y, lr=0.01, epocas=500, epsilon=1e-6):
         
         w = w_nuevo
 
-    return w, historial_costo
+    
+    return w, historial_costo, w_inicial
 
 # ===========================================================================
 
@@ -78,8 +82,7 @@ if __name__ == "__main__":
     print("-" * 40)
 
     for lr_test, color in zip(learning_rates, colores):
-        # Entrenar
-        w_final, historial = gradient_descent_multivariable(
+        w_final, historial, w_inicial = gradient_descent_multivariable(
             X_final, y, lr=lr_test, epocas=4000
         )
         
@@ -95,6 +98,24 @@ if __name__ == "__main__":
     plt.yscale('log') # Escala logarítmica para ver mejor la caída
     plt.legend()
     plt.grid(True, linestyle='--', alpha=0.5)
+
+    # mostrar pesos iniciales y finales
+    print("\n" + "="*55)
+    print("  ANÁLISIS DE PESOS (INICIALES VS FINALES)")
+    print("="*55)
+    
+    print("PESOS INICIALES (Aleatorios por np.random):")
+    print(f"Bias (w0): {w_inicial[0]:>10.5f}")
+    for feature, peso in zip(features, w_inicial[1:]):
+        print(f"{feature:>15}: {peso:>10.5f}")
+
+    print("-" * 55)
+    print("PESOS FINALES (Óptimos encontrados):")
+    print(f"Bias (w0): {w_final[0]:>10.5f}")
+    for feature, peso in zip(features, w_final[1:]):
+        impacto_absoluto = abs(peso)
+        print(f"{feature:>15}: {peso:>10.5f}  |  Impacto (Abs): {impacto_absoluto:.5f}")
+    print("="*55)
     
     print("\n[INFO] Gráfica generada. Analiza cuál LR converge más rápido.")
     plt.show()
